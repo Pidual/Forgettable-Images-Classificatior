@@ -1,0 +1,59 @@
+services:
+  users: # Servicio de usuarios (Flask)
+    build: ./users_service
+    container_name: users_service
+    ports:
+      - "5001:5001"
+    environment:
+      - SECRET_KEY=supersecretkey
+      - SQLALCHEMY_DATABASE_URI=postgresql://user:password@postgres_db/microservices_db
+    depends_on:
+      - db
+    networks:
+      - app_network
+
+  images: # Servicio de imágenes (Flask)
+    build: ./images_service
+    container_name: images_service
+    ports:
+      - "5002:5002"
+    environment:
+      - SECRET_KEY=supersecretkey
+      - SQLALCHEMY_DATABASE_URI=postgresql://user:password@postgres_db/microservices_db
+    volumes:
+      - images_data:/app/uploads
+    networks:
+      - app_network
+
+  inference: # Servicio de inferencia (Flask)
+    build: ./inference_service
+    container_name: inference_service
+    ports:
+      - "5003:5003"
+    environment:
+      - SECRET_KEY=supersecretkey
+    networks:
+      - app_network
+
+  db: # Servicio de PostgreSQL
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: microservices_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  images_data:
+  postgres_data:

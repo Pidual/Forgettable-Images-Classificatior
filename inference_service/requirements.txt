@@ -1,0 +1,7 @@
+Flask
+torch
+torchvision
+torchaudio
+numpy
+pillow
+pyjwt
