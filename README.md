@@ -119,41 +119,29 @@ Se pueden definir múltiples routers con distintas reglas en Docker Compose o `t
 Puedes probar los servicios utilizando **Postman** o **cURL**.
 
 ### 🔑 1. Obtener un Token JWT (Usuarios)
-```sh
-curl -X POST http://users.localhost/login \
-     -H "Content-Type: application/json" \
-     -d '{"username": "testuser", "password": "password"}'
-```
-**Respuesta:**
-```json
-{
-    "token": "your_jwt_token_here"
-}
-```
+REGISTRARSE
+![Screenshot from 2025-03-30 23-31-44](https://github.com/user-attachments/assets/530709bc-c41d-429b-b9a4-1034f5299aec)
+LOGGEARSE
+![Screenshot from 2025-03-30 23-32-46](https://github.com/user-attachments/assets/74cd4759-f323-45bf-8d39-ab372ce4b6c5)
+
 
 ### 📤 2. Subir una Imagen
-```sh
-curl -X POST http://images.localhost/upload \
-     -H "Authorization: Bearer your_jwt_token_here" \
-     -H "Content-Type: multipart/form-data" \
-     -F "file=@path_to_image.jpg"
-```
-**Respuesta:**
-```json
-{
-    "image_id": 123,
-    "message": "Image uploaded successfully"
-}
-```
+
+![image](https://github.com/user-attachments/assets/f799aaf8-c6ff-42ba-92b9-5da175555faf)
+![Screenshot from 2025-03-30 23-34-11](https://github.com/user-attachments/assets/c95a9037-22b1-4bff-aae8-bf4c57ee930a)
+![image](https://github.com/user-attachments/assets/1f27293f-72cb-41a9-8fa3-4f1fd81b4695)
+RESPUESTA ESPERADA
+![image](https://github.com/user-attachments/assets/e861b167-06c4-49f5-bd8f-6660dc532926)
+
 
 ### 🧠 3. Hacer una Inferencia
 ```sh
 curl -X GET http://inference.localhost/predict/123 \
-     -H "Authorization: Bearer your_jwt_token_here"
+     -H "Authorization: Bearer jwt_token_here"
 ```
 **Respuesta esperada:**
 ```json
 {
-    "prediction": "cat"
+    "prediction": "forgetable"
 }
 ```
