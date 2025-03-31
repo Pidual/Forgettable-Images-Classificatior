@@ -96,8 +96,8 @@ Se pueden definir múltiples routers con distintas reglas en Docker Compose o `t
 ## Instrucciones para Ejecutar el Proyecto
 1. Clonar el repositorio:
    ```sh
-   git clone <repo_url>
-   cd <repo>
+   git clone https://github.com/Pidual/Forgettable-Images-Classificatior
+   cd Forgettable-Images-Classificatior
    ```
 2. Levantar los servicios con Docker Compose:
    ```sh
