@@ -113,29 +113,45 @@ Se pueden definir múltiples routers con distintas reglas en Docker Compose o `t
 ---
 
 
+## 🛠 Cómo Probar los Endpoints
+Puedes probar los servicios utilizando **Postman** o **cURL**.
 
+### 🔑 1. Obtener un Token JWT (Usuarios)
+```sh
+curl -X POST http://users.localhost/login \
+     -H "Content-Type: application/json" \
+     -d '{"username": "testuser", "password": "password"}'
+```
+**Respuesta:**
+```json
+{
+    "token": "your_jwt_token_here"
+}
+```
 
+### 📤 2. Subir una Imagen
+```sh
+curl -X POST http://images.localhost/upload \
+     -H "Authorization: Bearer your_jwt_token_here" \
+     -H "Content-Type: multipart/form-data" \
+     -F "file=@path_to_image.jpg"
+```
+**Respuesta:**
+```json
+{
+    "image_id": 123,
+    "message": "Image uploaded successfully"
+}
+```
 
-Clona el repositorio:
-
-git clone [<URL_DEL_REPO>](https://github.com/Pidual/Forgettable-Images-Classificatior)
-cd <NOMBRE_DEL_PROYECTO>
-
-Levanta los servicios con Docker Compose:
-
-docker-compose up -d
-
-Accede a los servicios:
-
-Traefik Dashboard: http://localhost:8080
-
-Usuarios: http://users.localhost
-
-Imágenes: http://images.localhost
-
-Inferencia: http://inference.localhost
-
-🛠 Cómo Probar los Endpoints
-
-Puedes probar los servicios con Postman 
-
+### 🧠 3. Hacer una Inferencia
+```sh
+curl -X GET http://inference.localhost/predict/123 \
+     -H "Authorization: Bearer your_jwt_token_here"
+```
+**Respuesta esperada:**
+```json
+{
+    "prediction": "cat"
+}
+```
