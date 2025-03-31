@@ -1,3 +1,4 @@
+# images_service/app.py
 from flask import Flask
 from routes import image_routes
 from db import init_db
@@ -5,7 +6,7 @@ from db import init_db
 app = Flask(__name__)
 
 # Configuración
-app.config.from_object("config")
+app.config.from_object("config.Config")
 init_db(app)
 
 # Registrar rutas

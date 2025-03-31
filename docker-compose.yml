@@ -1,41 +1,79 @@
 services:
-  users: # Servicio de usuarios (Flask)
+  traefik:
+    image: traefik:v3.3
+    container_name: traefik
+    restart: always
+    command:
+      - "--api.insecure=true"  # Insecure UI enabled for testing
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--ping=true" # For health check
+      - "--providers.docker.defaultrule=Host(`{{ .Name }}.localhost`)"
+      - "--log.level=DEBUG"  # Activate debug logs
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - traefik_network
+    labels:
+      - "traefik.http.middlewares.no-auth.basicauth.users="
+
+
+  users:
     build: ./users_service
     container_name: users_service
-    ports:
-      - "5001:5001"
     environment:
       - SECRET_KEY=supersecretkey
       - SQLALCHEMY_DATABASE_URI=postgresql://user:password@postgres_db/microservices_db
     depends_on:
       - db
     networks:
+      - traefik_network
       - app_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.users.rule=Host(`users.localhost`)"
+      - "traefik.http.routers.users.entrypoints=web"
+      - "traefik.http.services.users.loadbalancer.server.port=5001"
+      - "traefik.docker.network=traefik-30avanzado_traefik_network"
 
-  images: # Servicio de imágenes (Flask)
+
+  images:
     build: ./images_service
     container_name: images_service
-    ports:
-      - "5002:5002"
     environment:
       - SECRET_KEY=supersecretkey
       - SQLALCHEMY_DATABASE_URI=postgresql://user:password@postgres_db/microservices_db
     volumes:
       - images_data:/app/uploads
     networks:
+      - traefik_network
       - app_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.images.rule=Host(`images.localhost`)"
+      - "traefik.http.routers.images.entrypoints=web"
+      - "traefik.http.services.images.loadbalancer.server.port=5002"
+    # Images service is still protected by JWT in its code.
 
-  inference: # Servicio de inferencia (Flask)
+  inference:
     build: ./inference_service
     container_name: inference_service
-    ports:
-      - "5003:5003"
     environment:
       - SECRET_KEY=supersecretkey
     networks:
+      - traefik_network
       - app_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.inference.rule=Host(`inference.localhost`)"
+      - "traefik.http.routers.inference.entrypoints=web"
+      - "traefik.http.services.inference.loadbalancer.server.port=5003"
 
-  db: # Servicio de PostgreSQL
+  db:
     image: postgres:15
     container_name: postgres_db
     restart: always
@@ -43,14 +81,14 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: microservices_db
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app_network
 
 networks:
+  traefik_network:
+    driver: bridge
   app_network:
     driver: bridge
 

@@ -7,6 +7,12 @@ from config import Config
 
 user_routes = Blueprint('users', __name__)
 
+def generate_token(user_id, expires_in=8200):
+    """Genera un token JWT para el usuario."""
+    expiration = datetime.datetime.utcnow() + datetime.timedelta(seconds=expires_in)
+    token = jwt.encode({"user_id": user_id, "exp": expiration}, Config.SECRET_KEY, algorithm="HS256")
+    return token
+
 @user_routes.route("/register", methods=["POST"])
 def register():
     data = request.json
@@ -21,7 +27,6 @@ def login():
     data = request.json
     user = User.query.filter_by(username=data["username"]).first()
     if user and check_password_hash(user.password_hash, data["password"]):
-        token = jwt.encode({"user_id": user.id, "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)},
-                           Config.SECRET_KEY, algorithm="HS256")
+        token = generate_token(user.id)
         return jsonify({"token": token})
     return jsonify({"message": "Invalid credentials"}), 401

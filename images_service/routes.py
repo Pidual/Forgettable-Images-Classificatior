@@ -1,9 +1,11 @@
+# images_service/routes.py
 import os
 from flask import Blueprint, request, jsonify, send_from_directory, current_app
 from werkzeug.utils import secure_filename
 import jwt
 from models import db, Image
 from config import Config
+import functools
 
 image_routes = Blueprint("images", __name__)
 
@@ -13,6 +15,7 @@ def allowed_file(filename):
 
 # Middleware para validar JWT
 def token_required(func):
+    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         token = request.headers.get("Authorization")
         if not token:
@@ -25,6 +28,7 @@ def token_required(func):
         except jwt.InvalidTokenError:
             return jsonify({"message": "Invalid token"}), 401
     return wrapper
+
 
 # Endpoint para subir imágenes
 @image_routes.route("/upload", methods=["POST"])

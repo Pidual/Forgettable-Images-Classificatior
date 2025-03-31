@@ -3,3 +3,4 @@ flask-jwt-extended
 werkzeug
 pillow
 flask_sqlalchemy
+psycopg2-binary
