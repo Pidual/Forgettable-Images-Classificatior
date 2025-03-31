@@ -1,14 +1,17 @@
+# users_service/routes.py
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 import datetime
-from models import db, User
+from models import User
+from db import db
 from config import Config
+from sqlalchemy.exc import IntegrityError
 
 user_routes = Blueprint('users', __name__)
 
 def generate_token(user_id, expires_in=8200):
-    """Genera un token JWT para el usuario."""
+    """Generate a JWT token for the user."""
     expiration = datetime.datetime.utcnow() + datetime.timedelta(seconds=expires_in)
     token = jwt.encode({"user_id": user_id, "exp": expiration}, Config.SECRET_KEY, algorithm="HS256")
     return token
@@ -19,7 +22,11 @@ def register():
     hashed_pw = generate_password_hash(data["password"], method="pbkdf2:sha256")
     new_user = User(username=data["username"], password_hash=hashed_pw, email=data["email"])
     db.session.add(new_user)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except IntegrityError as e:
+        db.session.rollback()  # rollback the session to clean it
+        return jsonify({"message": "Username already exists"}), 409
     return jsonify({"message": "User created"}), 201
 
 @user_routes.route("/login", methods=["POST"])

@@ -17,9 +17,17 @@ def allowed_file(filename):
 def token_required(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        token = request.headers.get("Authorization")
-        if not token:
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
             return jsonify({"message": "Token is missing"}), 401
+
+        # Check if header starts with "Bearer " and extract the token
+        parts = auth_header.split()
+        if len(parts) == 2 and parts[0].lower() == "bearer":
+            token = parts[1]
+        else:
+            token = auth_header  # Fallback if not formatted as Bearer
+
         try:
             data = jwt.decode(token, Config.SECRET_KEY, algorithms=["HS256"])
             return func(*args, **kwargs, user_id=data["user_id"])
@@ -28,6 +36,7 @@ def token_required(func):
         except jwt.InvalidTokenError:
             return jsonify({"message": "Invalid token"}), 401
     return wrapper
+
 
 
 # Endpoint para subir imágenes

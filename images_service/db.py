@@ -1,4 +1,4 @@
-# images_service/db.py
+# images_service/db
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()

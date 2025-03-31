@@ -3,12 +3,13 @@ from flask import Flask
 from config import Config
 from db import init_db
 from routes import user_routes  # your blueprint
-from models import User  # your model
 
 app = Flask(__name__)
 app.config.from_object(Config)
 init_db(app)
+
 app.register_blueprint(user_routes)
+app.config['DEBUG'] = True
 
 # Create tables if they don't exist
 with app.app_context():
