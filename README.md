@@ -1,4 +1,4 @@
-# Forgettable-Images-Classificatior (WIP)
+# Forgettable-Images-Classificatior (⚠️ WIP ⚠️)
 ![Screenshot from 2025-03-30 23-13-26](https://github.com/user-attachments/assets/9f7b97a2-f687-433d-bdf5-5d1ab8699a4e)
 
 # Proyecto: Orquestacion de Microservicios con Traefik
@@ -14,15 +14,15 @@ Este proyecto implementa un entorno donde múltiples servicios se comunican entr
 - **Configuración de Traefik** para distribuir las solicitudes entre tres instancias del servicio **users_service**.
 
 ### 2. Reglas de Enrutamiento Dinámico
-- **Autenticación**: Usuarios autenticados son dirigidos a un grupo de servidores específicos. (No realmente pues se utiliza JWT en realidad no se redirige nada)
-- **Acceso a /admin**: Solo usuarios con IP en lista blanca pueden acceder. (No implementado)
-- **Alta Carga**: Se activa un servidor de respaldo si hay tráfico elevado. (No implementado)
+- **Autenticación**: Usuarios autenticados son dirigidos a un grupo de servidores específicos. (⚠️ No realmente pues se utiliza JWT en realidad no se redirige nada ⚠️)
+- **Acceso a /admin**: Solo usuarios con IP en lista blanca pueden acceder. (⚠️ No implementado ⚠️)
+- **Alta Carga**: Se activa un servidor de respaldo si hay tráfico elevado. (⚠️ No implementado ⚠️)
 
 ### 3. Gestión de Errores Personalizada
 - **Página de error personalizada** para servicios no disponibles, utilizando **Nginx**. (Se implemento)
 
 ### 4. Monitoreo
-- **Integración con Prometheus y Grafana** para analizar el rendimiento del sistema. (No implementado)
+- **Integración con Prometheus y Grafana** para analizar el rendimiento del sistema. (⚠️ No implementado ⚠️)
 
 ---
 
@@ -57,12 +57,12 @@ Este proyecto implementa un entorno donde múltiples servicios se comunican entr
 ---
 
 ## Flujo de Tráfico en Traefik
-1. **El usuario realiza una solicitud** a `http://users.localhost/`.
-2. **Traefik analiza la petición** y aplica las reglas de ruteo.
-3. **Si está autenticado**, es redirigido a un grupo específico de servidores.
-4. **Si accede a /admin**, se verifica su IP antes de permitir el acceso.
-5. **Si hay alta carga**, Traefik activa un servidor adicional.
-6. **Si un servicio falla**, la solicitud es enviada a Nginx para mostrar un error personalizado.
+1. El usuario realiza una solicitud a `http://users.localhost/`.
+2. Traefik analiza la petición y aplica las reglas de ruteo.
+3. Si está autenticado, es redirigido a un grupo específico de servidores.
+4. Si accede a /admin, se verifica su IP antes de permitir el acceso.
+5. Si hay alta carga, Traefik activa un servidor adicional.
+6. Si un servicio falla, la solicitud es enviada a Nginx para mostrar un error personalizado.
 
 ---
 
