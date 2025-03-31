@@ -103,6 +103,8 @@ Se pueden definir múltiples routers con distintas reglas en Docker Compose o `t
    ```sh
    docker-compose up -d
    ```
+2.1 Agregar esta regla a /etc/hosts para que el DNS resuelva los endpoints
+127.0.0.1   users.localhost images.localhost inference.localhost  
 3. Acceder a los servicios:
    - **Traefik Dashboard**: [http://localhost:8080](http://localhost:8080)
    - **Users Service**: [http://users.localhost](http://users.localhost)
